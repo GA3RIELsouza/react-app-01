@@ -1,9 +1,11 @@
-# Criar o projeto React
-```bash
-mpx create-react-app client-ui
-```
+> # Criar o projeto React
+> ```bash
+> mpx create-react-app client-ui
+> ```
 
-# Instalar Axios
-```bash
-npm install axios
-```
+---
+
+> # Instalar Axios
+> ```bash
+> npm install axios
+> ```
