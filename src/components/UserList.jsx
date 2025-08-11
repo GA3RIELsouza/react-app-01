@@ -3,8 +3,8 @@ import axios from "axios"
 
 export default function UserList({ onUserDeleted, reload }) {
     const [users, setUsers] = useState([])
-    const [userId, setEditing] = useState(0)
-    const [x, cancelEditing] = useState(0)
+    const [editingUserId, setEditingUserId] = useState(null)
+    const [editingName, setEditingName] = useState("")
 
     const fetchUsers = async () => {
         try {
@@ -26,12 +26,18 @@ export default function UserList({ onUserDeleted, reload }) {
 
     const updateUser = async (id, name) => {
         try {
-            const payload = {name}
+            const payload = { name }
             await axios.put(`http://127.0.0.1:3000/users/${id}`, payload)
+            setEditingUserId(null)
             onUserDeleted()
         } catch (err) {
             alert(err)
         }
+    }
+
+    const startEditing = (user) => {
+        setEditingUserId(user.id)
+        setEditingName(user.name)
     }
 
     useEffect(() => {
@@ -46,9 +52,23 @@ export default function UserList({ onUserDeleted, reload }) {
                 : <ul>
                     {users.map(user => (
                         <li key={user.id}>
-                            {`${user.name} `}
-                            <button onClick={()=>{updateUser(user.id, "Editado!")}}>Editar</button>
-                            <button onClick={()=>{deleteUser(user.id)}}>X</button>
+                            {editingUserId === user.id ? (
+                                <>
+                                    <input
+                                        type="text"
+                                        value={editingName}
+                                        onChange={(e) => setEditingName(e.target.value)}
+                                    />
+                                    <button onClick={() => updateUser(user.id, editingName)}>Salvar</button>
+                                    <button onClick={() => setEditingUserId(null)}>Cancelar</button>
+                                </>
+                            ) : (
+                                <>
+                                    {`${user.name} `}
+                                    <button onClick={() => startEditing(user)}>Editar</button>
+                                    <button onClick={() => deleteUser(user.id)}>X</button>
+                                </>
+                            )}
                         </li>
                     ))}
                 </ul>}
